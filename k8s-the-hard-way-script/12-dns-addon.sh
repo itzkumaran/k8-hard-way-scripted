@@ -11,7 +11,7 @@ EOF
 echo "============== In this lab you will deploy the DNS add-on which provides DNS based service discovery, backed by CoreDNS, to applications running inside the Kubernetes cluster."
 echo "============== The DNS Cluster Add-on"
 echo "============== Deploy the coredns cluster add-on:"
-kubectl apply -f https://storage.googleapis.com/kubernetes-the-hard-way/coredns-1.7.0.yaml
+kubectl apply -f coredns-1.7.0.yaml
 echo "============== The output should be like this"
 cat << EOF
 serviceaccount/coredns created
