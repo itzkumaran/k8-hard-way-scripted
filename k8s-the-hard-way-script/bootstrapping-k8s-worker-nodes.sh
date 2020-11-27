@@ -1,16 +1,4 @@
-#!/usr/bin/env bash
 
-
-cat << EOF
-#####################################
-# 09. Bootstrapping the Kubernetes Worker Nodes
-# https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/09-bootstrapping-kubernetes-workers.md
-#####################################
-EOF
-
-echo "============== Prerequisites"
-
-echo '
 echo "============== Provisioning a Kubernetes Worker Node"
 echo "============== Install the OS dependencies:"
 {
@@ -220,25 +208,4 @@ echo "============== Start the Worker Services"
 }
 
 
-' > bootstrapping-k8s-worker-nodes.sh
 
-for instance in worker-0 worker-1 worker-2; do
-  echo "========= ${instance} =========="
-  gcloud compute ssh ${instance} -- 'bash -s' < bootstrapping-k8s-worker-nodes.sh
-done
-
-echo "============== Verification"
-echo "============== The compute instances created in this tutorial will not have permission to complete this section."
-echo "Run the following commands from the same machine used to create the compute instances."
-
-echo "============== List the registered Kubernetes nodes:"
-gcloud compute ssh controller-0 \
-  --command "kubectl get nodes --kubeconfig admin.kubeconfig"
-
-echo "============== The output should be like this"
-cat << EOF
-NAME       STATUS   ROLES    AGE   VERSION
-worker-0   Ready    <none>   35s   v1.18.6
-worker-1   Ready    <none>   36s   v1.18.6
-worker-2   Ready    <none>   36s   v1.18.6
-EOF

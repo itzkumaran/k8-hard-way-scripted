@@ -27,7 +27,8 @@ wget -q --show-progress --https-only --timestamping \
   https://github.com/containerd/containerd/releases/download/v1.2.0-rc.0/containerd-1.2.0-rc.0.linux-amd64.tar.gz \
   https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl \
   https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubelet
+  https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubelet \
+  https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubeadm
 
 echo "============== Create the installation directories:"
 sudo mkdir -p \
@@ -127,12 +128,11 @@ LimitCORE=infinity
 WantedBy=multi-user.target
 EOF
 
-echo "============== Configure the Kubelet"
-{
-  sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
-  sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
-  sudo mv ca.pem /var/lib/kubernetes/
-}
+#echo "============== Configure the Kubelet"
+#{
+#  sudo mv bootstrap-kubeconfig /var/lib/kubelet/kubeconfig
+#  sudo mv ca.pem /var/lib/kubernetes/
+#}
 
 echo "============== Create the kubelet-config.yaml configuration file:"
 cat <<EOF | sudo tee /var/lib/kubelet/kubelet-config.yaml
@@ -172,6 +172,7 @@ ExecStart=/usr/local/bin/kubelet \\
   --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
   --image-pull-progress-deadline=2m \\
   --kubeconfig=/var/lib/kubelet/kubeconfig \\
+  --bootstrap-kubeconfig="/var/lib/kubelet/bootstrap-kubeconfig" \\
   --network-plugin=cni \\
   --register-node=true \\
   --v=2
@@ -183,7 +184,7 @@ WantedBy=multi-user.target
 EOF
 
 echo "============== Configure the Kubernetes Proxy"
-sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
+#sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
 
 echo "============== Create the kube-proxy-config.yaml configuration file:"
 cat <<EOF | sudo tee /var/lib/kube-proxy/kube-proxy-config.yaml
@@ -203,8 +204,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 ExecStart=/usr/local/bin/kube-proxy \\
-  --config=/var/lib/kube-proxy/kube-proxy-config.yaml \\
-  --masquerade-all 
+  --config=/var/lib/kube-proxy/kube-proxy-config.yaml
 Restart=on-failure
 RestartSec=5
 
@@ -220,12 +220,12 @@ echo "============== Start the Worker Services"
 }
 
 
-' > bootstrapping-k8s-worker-nodes.sh
+' > bootstrapping-k8s-future-worker-nodes.sh
 
-for instance in worker-0 worker-1 worker-2; do
-  echo "========= ${instance} =========="
-  gcloud compute ssh ${instance} -- 'bash -s' < bootstrapping-k8s-worker-nodes.sh
-done
+#for instance in worker-0 worker-1 worker-2; do
+#  echo "========= ${instance} =========="
+#  gcloud compute ssh ${instance} -- 'bash -s' < bootstrapping-k8s-future-worker-nodes.sh
+#done
 
 echo "============== Verification"
 echo "============== The compute instances created in this tutorial will not have permission to complete this section."

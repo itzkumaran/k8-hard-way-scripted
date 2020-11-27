@@ -27,6 +27,9 @@ bash ${SCRIPT_DIR}/02-client-tools.sh
 echo; echo; echo
 bash ${SCRIPT_DIR}/03-compute-resources.sh
 
+# Sleep to get compute instances settled
+sleep 10
+
 echo; echo; echo
 bash ${SCRIPT_DIR}/04-certificate-authority.sh
 
