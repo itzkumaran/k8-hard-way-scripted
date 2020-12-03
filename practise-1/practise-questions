@@ -1,0 +1,620 @@
+*** important settings ***
+
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+syntax on
+
+alias k=kubectl 
+export an="--all-namespaces"
+export dr="--dry-run=client -o yaml"
+export ks="-n=kube-system"
+export nw="--wait=false"
+export ym="-o yaml"
+export nr="--restart=Never"
+export ns="-n=admin1401"
+
+export ns="-n=practise-2"
+export ks="-n=kube-system"
+export nr="--restart=Never"
+export dr="--dry-run=client -o yaml"
+export an="--all-namespaces"
+export ym="-o yaml"
+alias k="kubectl"
+------------
+
+source <(kubectl completion bash)
+complete -F __start_kubectl k
+alias k=kubectl 
+alias kgp="kubectl get pods"
+alias kgn="kubectl get nodes"
+alias kgd="kubectl get deployments"
+alias kgs="kubectl get services"
+alias kge="kubectl get events --sort-by '.metadata.creationTimestamp"
+alias kn="kubectl get config current-context --namespace "
+export dr="--dry-run=client -o yaml"
+export nr="--restart=Never"
+export ks="-n=kube-system"
+export an="--all-namespaces"
+export ETCDCTL_API=3
+export k8s="https://k8s.io/docs"
+
+
+# replace x in 1.19.0-00 with the latest patch version
+apt-mark unhold kubeadm && \
+apt-get update && apt-get install -y kubeadm=1.19.0-00 && \
+apt-mark hold kubeadm
+-
+# since apt-get version 1.1 you can also use the following method
+apt-get update && \
+apt-get install -y --allow-change-held-packages kubeadm=1.19.0-00
+
+
+kubeadm version
+kubectl drain master --ignore-daemonsets
+
+sudo kubeadm upgrade plan
+
+kubeadm upgrade apply v1.19.0
+
+kubectl uncordon master
+
+# replace x in 1.19.0-00 with the latest patch version
+apt-mark unhold kubelet kubectl && \
+apt-get update && apt-get install -y kubelet=1.19.0-00 kubectl=1.19.0-00 && \
+apt-mark hold kubelet kubectl
+-
+# since apt-get version 1.1 you can also use the following method
+apt-get update && \
+apt-get install -y --allow-change-held-packages kubelet=1.19.0-00 kubectl=1.19.0-00
+
+
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+---------------------
+
+worker 
+------
+# replace x in 1.19.0-00 with the latest patch version
+apt-mark unhold kubeadm && \
+apt-get update && apt-get install -y kubeadm=1.19.0-00 && \
+apt-mark hold kubeadm
+-
+# since apt-get version 1.1 you can also use the following method
+apt-get update && \
+apt-get install -y --allow-change-held-packages kubeadm=1.19.0-00
+
+
+Drain the node
+kubectl drain node01 --ignore-daemonsets
+
+sudo kubeadm upgrade node
+
+# replace x in 1.19.0-00 with the latest patch version
+apt-mark unhold kubelet kubectl && \
+apt-get update && apt-get install -y kubelet=1.19.0-00 kubectl=1.19.0-00 && \
+apt-mark hold kubelet kubectl
+-
+# since apt-get version 1.1 you can also use the following method
+apt-get update && \
+apt-get install -y --allow-change-held-packages kubelet=1.19.0-00 kubectl=1.19.0-00
+
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+kubectl uncordon node01
+kubectl get nodes
+
+------------------
+ /opt/etcd-backup.db
+
+ETCDCTL_API=3 etcdctl --endpoints https://127.0.0.1:2379 
+
+   - --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt
+    - --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt
+    - --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key
+    - --etcd-servers=https://127.0.0.1:2379
+
+ETCDCTL_API=3 etcdctl --endpoints https://127.0.0.1:2379  --cacert=/etc/kubernetes/pki/etcd/ca.crt  --cert=/etc/kubernetes/pki/apiserver-etcd-client.crt --key=/etc/kubernetes/pki/apiserver-etcd-client.key snapshot save  /opt/etcd-backup.db
+    - --etcd-servers=https://127.0.0.1:2379
+
+kubectl get deploy
+
+admin2406 
+
+autocmd FileType yaml setlocal et ts=2 ai sw=2 nu sts=0
+syntax on
+
+kubectl get deploy -n=admin2406 -o custom-columns=DEPLOYMENT:'.metadata.name',CONTAINER_IMAGE:'.spec.template.spec.containers[0].image',READY_REPLICAS:'.status.readyReplicas',NAMESPACE:'.metadata.namespace' --sort-by='.metadata.name'
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.16
+        ports:
+        - containerPort: 80
+
+kubectl set image deployment/nginx nginx=nginx:1.17
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-1401
+spec:
+  containers:
+  - name: secret-admin
+    image: busybox
+    args:
+      - /bin/sh
+      - -c
+      - sleep 4800
+    volumeMounts:
+    - name: secret-volume
+      mountPath: "/etc/secret-volume"
+      readOnly: true
+  volumes:
+  - name: secret-volume
+    secret:
+      secretName: dotfile-secret
+-------------
+
+kubectl get pods -o json | jq '.items | group_by(.metadata.creationTimestamp) | map({"timestamp": .[0].metadata.creationTimestamp, "count": length}) | sort_by(.count)'
+Descending
+
+kubectl get pods -o json | jq '.items | group_by(.metadata.creationTimestamp) | map({"timestamp": .[0].metadata.creationTimestamp, "count": length}) | sort_by(.count) | reverse'
+
+-----------------
+
+**** Dumps ****
+Practice Examples, Dumps & Tips — CKA & CKAD (Certified Kubernetes Administrator and Developer) Exam by CNCF
+Practice makes a Man Perfect — So practice, practice, and practice before the CKA & CKAD exam and score 100%.
+Sen Sre
+Sen Sre
+Dec 23, 2019·7 min read
+
+
+
+To start with understand the concepts and practice all exam topics thoroughly as per the below example questions. The exam is intense though as it requires 3 hours of concentrated effort during which you need to solve 24 problems but as long as you enjoy solving problems, it feels very rewarding. it's not very difficult to clear the exam (as some articles on the internet claim it to be) provided you. So, if you are interested to take this exam and have a second thought about it, my sincere advice is, just do it! You will clear it!!
+Practice this Examples questions:
+dgkanatsios/CKAD-exercises
+A set of exercises that helped me prepare for the Certified Kubernetes Application Developer exam, offered by the Cloud…
+github.com
+Practice Enough With These 150 Questions for the CKAD Exam
+Exercises get you ready for the Certified Kubernetes Application Developer exam
+medium.com
+Certified Kubernetes Administrator (CKA) with Practice Tests
+Kubernetes is one of the highest trending technology in Cloud Computing as of today. Kubernetes had the fastest growth…
+www.udemy.com
+walidshaari/Kubernetes-Certified-Administrator
+Online resources that will help you prepare for taking the CNCF CKA "Kubernetes Certified Administrator" Certification…
+github.com
+My Exam Practice Question Dumps:
+CNCF Kubernetes Class + labs
+K8S The Hard Way run through
+Run through all the tasks in the k8s docs
+Practice with systemd, journald, openssl, cfssl, and etcd
+Work through the sections in above GitHub list
+Note — there are no answers here on purpose. You should be able to do these yourself using the minimal docs that you are allowed to use during the test. At a minimum, this should train you on where to look for this info during the test, without notes
+
+
+---------------
+Practice Example Question Dump -1:
+— Each of you creates the below in your namespace.
+— For each of the questions above, always keep a label “ques=prob<x>” assigned.
+Keep the specification copied into directory /opt/<yourname>/spec.prob<x>
+— — — — —
+namespace = practise-1
+-----------
+1. Create a pod named “web” using image nginx:1.11.9-alpine, on ports 80 and 443
+2. Create a service to expose that pod, named as “webservice”
+3. Copy the dns records for the service in file /opt/<yournamespace>/web.dnsrecord
+4. Create a deployment with “redis” image on port 6379 and expose a service.
+5. Increase the number of replicas to 3
+6. Perform a rolling update to version 4.0.11-alpine. =>  redis:4.0.11-alpine
+7. Copy pod spec to file /opt/yournamespace/podversion.
+
+8. Undo the image update to redis.. and confirm pod spec image matches
+
+9. Create a multi container pod, with redis, memcached, nginx and mysql,
+assign resource memory limit as 250M for each container.
+10. List all the pods in your namespace sorted by name.
+11. Mount a temporary volume within a busybox pod named “shell”
+at directory “/export/volume” copy the pod spec into /opt/yourname/shellvolume
+
+12. To the earlier pod “shell” attach liveliness probe to check the file
+/export/volume/app.log being available.
+13. Setup init container into shell pod that got created just now, to
+create a file /export/volume/app.log empty file before the busybox container
+is run.
+14. Create a secret “<yourname>-secret” with user=<yourname>, secret=”SOMESECRET”
+edit the “shell” pod to have the above secret imported as a volume
+at /opt/mysecretvolume, and MYSECRET environment defined to map to
+key secret in “<yourname>-secret”
+
+15. Create a persistent Volume named “<yourname>”
+specification that defines a volume for 10Gi mapping to hostpath /opt/<yourname>
+
+16. Take the etcd database snapshot saved into file /opt/<yourname>/etcdsnapshot
+the certificates and keys are available in /opt/certs directory.
+
+17. Get the dns records for the service and pods for the deployment “redis”
+copied to file /opt/<yourname>/dnsrecord.redis ==> need to find answer 
+18. List all the pods that are serviced by the service “webservice”and copy the output in /opt/<yourname>/webservice.targets ==> need to find answer 
+############################################
+Practice Example Question Dump -2:
+— create a namespace <name>0830 and perform the following tasks.
+— for each task create a spec file and save it in the homedirectory/namespace
+as spec.p<num>
+— — — — —
+1. Create a pod redis version 5.0-rc4-alpine named “mycache”
+2. Upgrade the pod to use 5.0-rc-alpine and save the pod spec as p2
+along with the command used.
+3. Create a config map from file /var/lib/kubelet/config.yaml
+and create a nginx pod that sees the configmap as a volume in the same path within the container,
+assign port 80 and expose it as a service “webservice” as well. The pod should be named “web”
+
+4. Create a busybox container that sleeps 60000, named “mybox”.
+
+5. Attach liveness probe to the container and restart if environment USER is null or undefined.
+Report pod status after attaching liveness probe. ==> Pending issue on comand failure for existence check on env variable
+
+6. Pass ENV variables “USER” and “SECRET”
+from a secret “boxsecret” defined already that has these initialized as “bob”/”somesupersecret”
+
+7. Attach resource requests and limits for cpu and memory at 10m/10m and 100m/1000M
+for “mybox” pod above.
+
+8. Create a pv named “yourname-volume” that maps to hostpath “/opt/volume/yourname/” as 100G capacity, and
+policy reclaim.
+
+9. Create a deployment “myvolume” for memcached that get a 1G volume mapped from
+yourname-volume at /opt/myvolume 
+
+10. Scale the deployment to have 2 replicas. => pending 
+11. Update myvolume deployment to have 1.5.10-alpine image on all replicas. => pending 
+12. Setup a init container in myvolume deployment to init a file in the mapped volume => pending 
+/opt/myvolume/config.yaml before the real memcached kick starts.
+
+13. Monitor pod lifecycle and log messages when pod/container starts/stops.
+
+14. Create a multi-container pod with nginx, memcached, redis all sharing the
+volume mount at /opt/myvolume with a 1G claim from your earlier pv created.
+
+15. List all objects in your namespace that has label “ques=p5”
+Find all pods that are serviced by your webservice.
+############################################
+Additional Practice Example Question Dump -3:
+Create a node that has a SSD and label it as such.
+Create a pod that is only scheduled on SSD nodes.
+Create 2 pod definitions: the second pod should be scheduled to run anywhere the first pod is running — 2nd pod runs alongside the first pod.
+Create a deployment running nginx version 1.12.2 that will run in 2 pods
+a. Scale this to 4 pods.
+b. Scale it back to 2 pods.
+c. Upgrade this to 1.13.8
+d. Check the status of the upgrade
+e. How do you do this in a way that you can see history of what happened?
+f. Undo the upgrade
+Create a service that uses a scratch disk.
+a. Change the service to mount a disk from the host.
+b. Change the service to mount a persistent volume.
+Create a pod that has a liveness check
+Create a service that manually requires endpoint creation — and create that too
+Create a daemon set
+a. Change the update strategy to do a rolling update but delaying 30 seconds between pod updates
+Create a static pod
+Create a busybox container without a manifest. Then edit the manifest.
+Create a pod that uses secrets
+a. Pull secrets from environment variables
+b. Pull secrets from a volume
+c. Dump the secrets out via kubectl to show it worked
+Create a job that runs every 3 minutes and prints out the current time.
+Create a job that runs 20 times, 5 containers at a time, and prints “Hello parallel world”
+Create a service that uses an external load balancer and points to a 3 pod cluster running nginx.
+Create a horizontal autoscaling group that starts with 2 pods and scales when CPU usage is over 50%.
+Create a custom resource definition
+a. Display it in the API with curl
+Create a networking policy such that only pods with the label access=granted can talk to it.
+a. Create an nginx pod and attach this policy to it.
+b. Create a busybox pod and attempt to talk to nginx — should be blocked
+c. Attach the label to busybox and try again — should be allowed
+Create a service that references an externalname.
+a. Test that this works from another pod
+Create a pod that runs all processes as user 1000.
+Create a namespace
+a. Run a pod in the new namespace
+b. Put memory limits on the namespace
+c. Limit pods to 2 persistent volumes in this namespace
+Write an ingress rule that redirects calls to /foo to one service and to /bar to another
+Write a service that exposes nginx on a nodeport
+a. Change it to use a cluster port
+b. Scale the service
+c. Change it to use an external IP
+d. Change it to use a load balancer
+Deploy nginx with 3 replicas and then expose a port
+a. Use port forwarding to talk to a specific port
+Make an API call using CURL and proper certs
+Upgrade a cluster with kubeadm
+Get logs for a pod
+Deploy a pod with the wrong image name (like — image=nginy) and find the error message.
+Get logs for kubectl
+Get logs for the scheduler
+Restart kubelet
+Convert a CRT to a PEM
+a. Convert it back
+Backup an etcd cluster
+List the members of an etcd cluster
+Find the health of etcd
+
+-----------
+
+ CKA exam testing
+
+There will be 32 questions, 4 hours, 8 clusters, 10 topics.
+
+Tip: Create an alias for all kubelet commands e.g:
+alias kg=’kubectl get’
+alias kc=’kubectl create -f’
+
+## Preparation
+
+Q: Create a Job that run 60 time with 2 jobs running in parallel
+https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+
+Q: Find which Pod is taking max CPU
+Use `kubectl top` to find CPU usage per pod
+
+Q: List all PersistentVolumes sorted by their name
+Use `kubectl get pv --sort-by=` <- this problem is buggy & also by default kubectl give the output sorted by name.
+
+Q: Create a NetworkPolicy to allow connect to port 8080 by busybox pod only
+https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+Make sure to use `apiVersion: extensions/v1beta1` which works on both 1.6 and 1.7
+
+Q: fixing broken nodes, see
+https://kubernetes.io/docs/concepts/architecture/nodes/
+
+Q: etcd backup, see
+https://kubernetes.io/docs/getting-started-guides/ubuntu/backups/
+https://www.mirantis.com/blog/everything-you-ever-wanted-to-know-about-using-etcd-with-kubernetes-v1-6-but-were-afraid-to-ask/
+
+Q: TLS bootstrapping, see
+https://coreos.com/kubernetes/docs/latest/openssl.html
+https://kubernetes.io/docs/admin/kubelet-tls-bootstrapping/
+https://github.com/cloudflare/cfssl
+
+Q: You have a Container with a volume mount. Add a init container that creates an empty file in the volume. (only trick is to mount the volume to init-container as well)
+
+https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pd
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+    volumeMounts:
+    - mountPath: /cache
+      name: cache-volume
+  initContainers:
+  - name: init-touch-file
+    image: busybox
+    volumeMounts:
+    - mountPath: /data
+      name: cache-volume
+    command: ['sh', '-c', 'echo "" > /data/harshal.txt']
+  volumes:
+  - name: cache-volume
+    emptyDir: {}
+````
+
+Q: When running a redis key-value store in your pre-production environments many deployments are incoming from CI and leaving behind a lot of stale cache data in redis which is causing test failures. The CI admin has requested that each time a redis key-value-store is deployed in staging that it not persist its data.
+
+Create a pod named non-persistent-redis that specifies a named-volume with name app-cache, and mount path /data/redis. It should launch in the staging namespace and the volume MUST NOT be persistent.
+Create a Pod with EmptyDir and in the YAML file add namespace: CI
+
+Q:  Setting up K8s master components with a binaries/from tar balls:
+
+Also, convert CRT to PEM: openssl x509 -in abc.crt -out abc.pem
+- https://coreos.com/kubernetes/docs/latest/openssl.html
+- https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/04-certificate-authority.md
+- https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/08-bootstrapping-kubernetes-controllers.md
+- https://gist.github.com/mhausenblas/0e09c448517669ef5ece157fd4a5dc4b
+- https://kubernetes.io/docs/getting-started-guides/scratch/
+- http://alexander.holbreich.org/kubernetes-on-ubuntu/ maybe dashboard?
+- https://kubernetes.io/docs/getting-started-guides/binary_release/
+- http://kamalmarhubi.com/blog/2015/09/06/kubernetes-from-the-ground-up-the-api-server/
+
+Q: Find the error message with the string “Some-error message here”.
+https://kubernetes.io/docs/concepts/cluster-administration/logging/ see kubectl logs and /var/log for system services
+
+Q 17: Create an Ingress resource, Ingress controller and a Service that resolves to cs.rocks.ch.
+
+First, create controller and default backend
+ ```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress/master/controllers/nginx/examples/default-backend.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress/master/examples/deployment/nginx/nginx-ingress-controller.yaml
+```
+
+Second, create service and expose
+ ```
+kubectl run ingress-pod --image=nginx --port 80
+kubectl expose deployment ingress-pod --port=80 --target-port=80 --type=NodePort
+```
+
+Create the ingress
+ ```
+cat <<EOF >ingress-cka.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-service
+spec:
+  rules:
+  - host: "cs.rocks.ch"
+    http:
+      paths:
+      - backend:
+          serviceName: ingress-pod
+          servicePort: 80
+EOF
+```
+
+To test, run a curl pod
+```
+kubectl run -i --tty client --image=tutum/curl
+curl -I -L --resolve cs.rocks.ch:80:10.240.0.5 http://cs.rocks.ch/
+```
+
+Q: Run a Jenkins Pod on a specified node only.
+https://kubernetes.io/docs/tasks/administer-cluster/static-pod/
+Create the Pod manifest at the specified location and then edit the systemd service file for kubelet(/etc/systemd/system/kubelet.service) to include `--pod-manifest-path=/specified/path`. Once done restart the service.
+
+Q: Use the utility nslookup to look up the DNS records of the service and pod.
+From this guide, https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+Look for “Quick Diagnosis” 
+$ kubectl exec -ti busybox -- nslookup mysvc.myns.svc.cluster.local
+Naming conventions for services and pods: 
+For a regular service, this resolves to the port number and the CNAME: my-svc.my-namespace.svc.cluster.local. 
+
+For a headless service, this resolves to multiple answers, one for each pod that is backing the service, and contains the port number and a CNAME of the pod of the form auto-generated-name.my-svc.my-namespace.svc.cluster.local
+When enabled, pods are assigned a DNS A record in the form of pod-ip-address.my-namespace.pod.cluster.local.
+For example, a pod with IP 1.2.3.4 in the namespace default with a DNS name of cluster.local would have an entry: 1-2-3-4.default.pod.cluster.local
+
+Q: Start a pod automatically by keeping manifest in /etc/kubernetes/manifests
+Refer to https://kubernetes.io/docs/tasks/administer-cluster/static-pod/
+Edit kubelet.service on any worker node to contain this flag --pod-manifest-path=/etc/kubernetes/manifests then place the pod manifest at /etc/kubernetes/manifests. 
+Now restart kubelet.
+
+
+Some other Questions:
+
+1. Main container looks for a file and crashes if it doesnt find the file. Write an init container to create the file and make it available for the main container 
+2. Install and Configure kubelet on a node to run pod on that node without contacting the api server
+3. Take backup of etcd cluster
+4. rotate TLS certificates
+5.rolebinding
+6.Troubleshooting - involved identifying failing nodes, pods , services and identifying cpu utilization of pods.
+
+---------
+
+Here is the first set:
+
+Create a node that has an SSD and label it as such.
+Create a pod that is only scheduled on SSD nodes.
+Create 2 pod definitions: the second pod should be scheduled to run anywhere the first pod is running - 2nd pod runs alongside the first pod.
+Create a deployment running nginx version 1.12.2 that will run in 2 pods
+Scale this to 4 pods.
+Scale it back to 2 pods.
+Upgrade this to 1.13.8
+Check the status of the upgrade
+How do you do this in a way that you can see the history of what happened?
+Undo the upgrade
+Expose the service on port 80
+Create a pod that uses a scratch disk.
+Change the pod to mount a path on the host.
+Taint a node and run a Jenkins Pod on that specified node only.
+Create a pod that has a liveness check
+Use the utility nslookup to look up the DNS records of the service and pod.
+Find which Pod is taking max CPU
+List all PersistentVolumes sorted by their name
+Create a daemon set
+Change the update strategy to do a rolling update but delaying 30 seconds between pod updates
+Create a static pod
+Create a busybox container without a manifest. Then edit the manifest.
+Create a pod that uses secrets
+Create a secret
+Pull secrets from environment variables
+Pull secrets from a volume
+Dump the secrets out via kubectl to show it worked
+Create a job that runs every 3 minutes and prints out the current time.
+Create a job that runs 20 times, 5 containers at a time, and prints “Hello parallel world”
+Create a horizontal autoscaling group that starts with 2 pods and scales when CPU usage is over 50%.
+Create a custom resource definition - CRD
+Display it in the API with curl
+Create a networking policy such that only pods with the label access=granted can talk to it.
+Create a nginx pod and attach this policy to it.
+Create a busybox pod and attempt to talk to nginx - should be blocked
+Attach the label to busybox and try again - should be allowed
+Create a service that references an externalname - https://api.github.com/users/prabhatsharma
+Test that this works from another pod
+Create a pod that runs all processes as user 1000.
+Create a namespace
+Run a pod in the new namespace
+Put memory limits on the namespace
+Limit pods to 2 persistent volumes in this namespace
+Write an ingress rule that redirects calls to /foo to one service and to /bar to another
+Write a service that exposes nginx on a nodeport
+Change it to use a cluster port
+Scale the service
+Change it to use an external IP
+Change it to use a load balancer
+Deploy nginx with 3 replicas and then expose a port
+Use port forwarding to talk to a specific port
+
+2nd practice test for CKA exam preparation. First is at CKA exam practice test 1
+
+Display all the pods sorted by start time
+Create a pod that uses secrets
+Create a secret
+Pull secrets from environment variables
+Pull secrets from a volume
+Dump the secrets out via kubectl to show it worked
+Create a job that runs every 3 minutes and prints out the current time.
+Create a job that runs 20 times, 5 containers at a time, and prints “Hello parallel world”
+Create a horizontal autoscaling group that starts with 2 pods and scales when CPU usage is over 50%.
+Create a custom resource definition - CRD
+Display it in the API with curl
+Create a networking policy such that only pods with the label access=granted can talk to it.
+Create a nginx pod and attach this policy to it.
+Create a busybox pod and attempt to talk to nginx - should be blocked
+Attach the label to busybox and try again - should be allowed
+Create a service that references an externalname.
+Test that this works from another pod
+Create a pod that runs all processes as user 1000.
+Create a namespace
+Run a pod in the new namespace
+Put memory limits on the namespace
+Limit pods to 2 persistent volumes in this namespace
+Write an ingress rule that redirects calls to /foo to one service and to /bar to another
+Write a service that exposes nginx on a nodeport
+Change it to use a cluster port
+Scale the service
+Change it to use an external IP
+Change it to use a load balancer
+Deploy nginx with 3 replicas and then expose a port
+Use port forwarding to talk to a specific port
+Make an API call using CURL and proper certs
+Join a new node to cluster
+Rotate certificates
+Taint a node and un-taint it
+Restart kubelet
+Configure the cluster to use 8.8.8.8 and 8.8.4.4 as upstream DNS servers.
+Create a pod with nginx and place a file using an init container that creates a simple index.html file with content - “created by init container”
+You have a Container with a volume mount. Add an init container that creates an empty file in the volume. (the only trick is to mount the volume to 1. init-container as well)
+Backup an etcd cluster
+List the members of an etcd cluster
+Find the health of etcd
+Feel free to add any questions in the comment section that you have created or have found in the wild.
+
+------------------
+
+https://github.com/StenlyTU/K8s-training-official
