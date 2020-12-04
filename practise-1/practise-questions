@@ -221,18 +221,15 @@ Keep the specification copied into directory /opt/<yourname>/spec.prob<x>
 — — — — —
 namespace = practise-1
 -----------
+******** DONE ***********
+
 1. Create a pod named “web” using image nginx:1.11.9-alpine, on ports 80 and 443
 2. Create a service to expose that pod, named as “webservice”
-3. Copy the dns records for the service in file /opt/<yournamespace>/web.dnsrecord
-4. Create a deployment with “redis” image on port 6379 and expose a service.
-5. Increase the number of replicas to 3
-6. Perform a rolling update to version 4.0.11-alpine. =>  redis:4.0.11-alpine
-7. Copy pod spec to file /opt/yournamespace/podversion.
-
-8. Undo the image update to redis.. and confirm pod spec image matches
-
 9. Create a multi container pod, with redis, memcached, nginx and mysql,
 assign resource memory limit as 250M for each container.
+4. Create a deployment with “redis” image on port 6379 and expose a service.
+5. Increase the number of replicas to 3
+8. Undo the image update to redis.. and confirm pod spec image matches 
 10. List all the pods in your namespace sorted by name.
 11. Mount a temporary volume within a busybox pod named “shell”
 at directory “/export/volume” copy the pod spec into /opt/yourname/shellvolume
@@ -242,6 +239,7 @@ at directory “/export/volume” copy the pod spec into /opt/yourname/shellvolu
 13. Setup init container into shell pod that got created just now, to
 create a file /export/volume/app.log empty file before the busybox container
 is run.
+
 14. Create a secret “<yourname>-secret” with user=<yourname>, secret=”SOMESECRET”
 edit the “shell” pod to have the above secret imported as a volume
 at /opt/mysecretvolume, and MYSECRET environment defined to map to
@@ -253,8 +251,23 @@ specification that defines a volume for 10Gi mapping to hostpath /opt/<yourname>
 16. Take the etcd database snapshot saved into file /opt/<yourname>/etcdsnapshot
 the certificates and keys are available in /opt/certs directory.
 
+1. Create a pod redis version 5.0-rc4-alpine named “mycache”
+2. Upgrade the pod to use 5.0-rc-alpine and save the pod spec as p2
+along with the command used.
+3. Create a config map from file /var/lib/kubelet/config.yaml
+and create a nginx pod that sees the configmap as a volume in the same path within the container,
+assign port 80 and expose it as a service “webservice” as well. The pod should be named “web”
+
+ ********** PENDING ***********
+6. Perform a rolling update to version 4.0.11-alpine. =>  redis:4.0.11-alpine ==> PENDING (how to annotate rollbacks)
+3. Copy the dns records for the service in file /opt/<yournamespace>/web.dnsrecord => PENDING
+7. Copy pod spec to file /opt/yournamespace/podversion => PENDING
+
+
+
 17. Get the dns records for the service and pods for the deployment “redis”
 copied to file /opt/<yourname>/dnsrecord.redis ==> need to find answer 
+
 18. List all the pods that are serviced by the service “webservice”and copy the output in /opt/<yourname>/webservice.targets ==> need to find answer 
 ############################################
 Practice Example Question Dump -2:
@@ -262,12 +275,7 @@ Practice Example Question Dump -2:
 — for each task create a spec file and save it in the homedirectory/namespace
 as spec.p<num>
 — — — — —
-1. Create a pod redis version 5.0-rc4-alpine named “mycache”
-2. Upgrade the pod to use 5.0-rc-alpine and save the pod spec as p2
-along with the command used.
-3. Create a config map from file /var/lib/kubelet/config.yaml
-and create a nginx pod that sees the configmap as a volume in the same path within the container,
-assign port 80 and expose it as a service “webservice” as well. The pod should be named “web”
+
 
 4. Create a busybox container that sleeps 60000, named “mybox”.
 
