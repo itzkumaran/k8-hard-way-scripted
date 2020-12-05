@@ -276,35 +276,15 @@ yourname-volume at /opt/myvolume
 10. Scale the deployment to have 2 replicas. => pending 
 11. Update myvolume deployment to have 1.5.10-alpine image on all replicas. => pending 
 
-
- ********** PENDING ***********
-6. Perform a rolling update to version 4.0.11-alpine. =>  redis:4.0.11-alpine ==> PENDING (how to annotate rollbacks)
-3. Copy the dns records for the service in file /opt/<yournamespace>/web.dnsrecord => PENDING
-7. Copy pod spec to file /opt/yournamespace/podversion => PENDING
-
-17. Get the dns records for the service and pods for the deployment “redis”
-copied to file /opt/<yourname>/dnsrecord.redis ==> need to find answer 
-
-18. List all the pods that are serviced by the service “webservice”and copy the output in /opt/<yourname>/webservice.targets ==> need to find answer 
-
-5. Attach liveness probe to the container and restart if environment USER is null or undefined.
-Report pod status after attaching liveness probe. ==> Pending issue on comand failure for existence check on env variable
-
-12. Setup a init container in myvolume deployment to init a file in the mapped volume => pending 
-/opt/myvolume/config.yaml before the real memcached kick starts. => getting permission denied error
-
-13. Monitor pod lifecycle and log messages when pod/container starts/stops.
-
 14. Create a multi-container pod with nginx, memcached, redis all sharing the
 volume mount at /opt/myvolume with a 1G claim from your earlier pv created.
 
 15. List all objects in your namespace that has label “ques=p5”
 Find all pods that are serviced by your webservice.
-############################################
-Additional Practice Example Question Dump -3:
+
 Create a node that has a SSD and label it as such.
 Create a pod that is only scheduled on SSD nodes.
-Create 2 pod definitions: the second pod should be scheduled to run anywhere the first pod is running — 2nd pod runs alongside the first pod.
+
 Create a deployment running nginx version 1.12.2 that will run in 2 pods
 a. Scale this to 4 pods.
 b. Scale it back to 2 pods.
@@ -312,25 +292,38 @@ c. Upgrade this to 1.13.8
 d. Check the status of the upgrade
 e. How do you do this in a way that you can see history of what happened?
 f. Undo the upgrade
-Create a service that uses a scratch disk.
-a. Change the service to mount a disk from the host.
-b. Change the service to mount a persistent volume.
-Create a pod that has a liveness check
-Create a service that manually requires endpoint creation — and create that too
+Create 2 pod definitions: the second pod should be scheduled to run anywhere the first pod is running — 2nd pod runs alongside the first pod.=> pod affinity
+
 Create a daemon set
-a. Change the update strategy to do a rolling update but delaying 30 seconds between pod updates
+
+Create a pod that has a liveness check
+
 Create a static pod
+
 Create a busybox container without a manifest. Then edit the manifest.
+
 Create a pod that uses secrets
 a. Pull secrets from environment variables
 b. Pull secrets from a volume
 c. Dump the secrets out via kubectl to show it worked
+
+############################################
+Additional Practice Example Question Dump -3:
+
+Create a service that manually requires endpoint creation — and create that too => PENDING
+
+a. Change the update strategy to do a rolling update but delaying 30 seconds between pod updates => terminationGracePeriodSeconds: 30
+
+
 Create a job that runs every 3 minutes and prints out the current time.
+
 Create a job that runs 20 times, 5 containers at a time, and prints “Hello parallel world”
+
 Create a service that uses an external load balancer and points to a 3 pod cluster running nginx.
 Create a horizontal autoscaling group that starts with 2 pods and scales when CPU usage is over 50%.
 Create a custom resource definition
 a. Display it in the API with curl
+
 Create a networking policy such that only pods with the label access=granted can talk to it.
 a. Create an nginx pod and attach this policy to it.
 b. Create a busybox pod and attempt to talk to nginx — should be blocked
@@ -362,6 +355,30 @@ a. Convert it back
 Backup an etcd cluster
 List the members of an etcd cluster
 Find the health of etcd
+
+--------------
+ ********** PENDING ***********
+6. Perform a rolling update to version 4.0.11-alpine. =>  redis:4.0.11-alpine ==> PENDING (how to annotate rollbacks)
+3. Copy the dns records for the service in file /opt/<yournamespace>/web.dnsrecord => PENDING
+7. Copy pod spec to file /opt/yournamespace/podversion => PENDING
+
+17. Get the dns records for the service and pods for the deployment “redis”
+copied to file /opt/<yourname>/dnsrecord.redis ==> need to find answer 
+
+18. List all the pods that are serviced by the service “webservice”and copy the output in /opt/<yourname>/webservice.targets ==> need to find answer 
+
+5. Attach liveness probe to the container and restart if environment USER is null or undefined.
+Report pod status after attaching liveness probe. ==> Pending issue on comand failure for existence check on env variable
+
+12. Setup a init container in myvolume deployment to init a file in the mapped volume => pending 
+/opt/myvolume/config.yaml before the real memcached kick starts. => getting permission denied error
+
+13. Monitor pod lifecycle and log messages when pod/container starts/stops.
+
+Question not clear ==>
+Create a service that uses a scratch disk. ==> emptyDir : {}
+a. Change the service to mount a disk from the host.
+b. Change the service to mount a persistent volume.
 
 -----------
 
@@ -620,3 +637,7 @@ Feel free to add any questions in the comment section that you have created or h
 ------------------
 
 https://github.com/StenlyTU/K8s-training-official
+
+---------------------------
+
+   
