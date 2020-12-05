@@ -181,14 +181,6 @@ kubectl get pods -o json | jq '.items | group_by(.metadata.creationTimestamp) | 
 
 -----------------
 
-**** Dumps ****
-Practice Examples, Dumps & Tips — CKA & CKAD (Certified Kubernetes Administrator and Developer) Exam by CNCF
-Practice makes a Man Perfect — So practice, practice, and practice before the CKA & CKAD exam and score 100%.
-Sen Sre
-Sen Sre
-Dec 23, 2019·7 min read
-
-
 
 To start with understand the concepts and practice all exam topics thoroughly as per the below example questions. The exam is intense though as it requires 3 hours of concentrated effort during which you need to solve 24 problems but as long as you enjoy solving problems, it feels very rewarding. it's not very difficult to clear the exam (as some articles on the internet claim it to be) provided you. So, if you are interested to take this exam and have a second thought about it, my sincere advice is, just do it! You will clear it!!
 Practice this Examples questions:
@@ -258,37 +250,13 @@ along with the command used.
 and create a nginx pod that sees the configmap as a volume in the same path within the container,
 assign port 80 and expose it as a service “webservice” as well. The pod should be named “web”
 
- ********** PENDING ***********
-6. Perform a rolling update to version 4.0.11-alpine. =>  redis:4.0.11-alpine ==> PENDING (how to annotate rollbacks)
-3. Copy the dns records for the service in file /opt/<yournamespace>/web.dnsrecord => PENDING
-7. Copy pod spec to file /opt/yournamespace/podversion => PENDING
-
-
-
-17. Get the dns records for the service and pods for the deployment “redis”
-copied to file /opt/<yourname>/dnsrecord.redis ==> need to find answer 
-
-18. List all the pods that are serviced by the service “webservice”and copy the output in /opt/<yourname>/webservice.targets ==> need to find answer 
-############################################
-Practice Example Question Dump -2:
-— create a namespace <name>0830 and perform the following tasks.
-— for each task create a spec file and save it in the homedirectory/namespace
-as spec.p<num>
-— — — — —
-
-
-4. Create a busybox container that sleeps 60000, named “mybox”.
-
-5. Attach liveness probe to the container and restart if environment USER is null or undefined.
-Report pod status after attaching liveness probe. ==> Pending issue on comand failure for existence check on env variable
-
-6. Pass ENV variables “USER” and “SECRET”
+4. Create a busybox container that sleeps 60000, named “mybox”.Pass ENV variables “USER” and “SECRET”
 from a secret “boxsecret” defined already that has these initialized as “bob”/”somesupersecret”
 
 7. Attach resource requests and limits for cpu and memory at 10m/10m and 100m/1000M
 for “mybox” pod above.
 
-8. Create a pv named “yourname-volume” that maps to hostpath “/opt/volume/yourname/” as 100G capacity, and
+ 8. Create a pv named “yourname-volume” that maps to hostpath “/opt/volume/yourname/” as 100G capacity, and
 policy reclaim.
 
 9. Create a deployment “myvolume” for memcached that get a 1G volume mapped from
@@ -296,8 +264,23 @@ yourname-volume at /opt/myvolume
 
 10. Scale the deployment to have 2 replicas. => pending 
 11. Update myvolume deployment to have 1.5.10-alpine image on all replicas. => pending 
+
+
+ ********** PENDING ***********
+6. Perform a rolling update to version 4.0.11-alpine. =>  redis:4.0.11-alpine ==> PENDING (how to annotate rollbacks)
+3. Copy the dns records for the service in file /opt/<yournamespace>/web.dnsrecord => PENDING
+7. Copy pod spec to file /opt/yournamespace/podversion => PENDING
+
+17. Get the dns records for the service and pods for the deployment “redis”
+copied to file /opt/<yourname>/dnsrecord.redis ==> need to find answer 
+
+18. List all the pods that are serviced by the service “webservice”and copy the output in /opt/<yourname>/webservice.targets ==> need to find answer 
+
+5. Attach liveness probe to the container and restart if environment USER is null or undefined.
+Report pod status after attaching liveness probe. ==> Pending issue on comand failure for existence check on env variable
+
 12. Setup a init container in myvolume deployment to init a file in the mapped volume => pending 
-/opt/myvolume/config.yaml before the real memcached kick starts.
+/opt/myvolume/config.yaml before the real memcached kick starts. => getting permission denied error
 
 13. Monitor pod lifecycle and log messages when pod/container starts/stops.
 
