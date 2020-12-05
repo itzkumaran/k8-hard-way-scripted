@@ -236,6 +236,35 @@ status:
   loadBalancer: {}
 ~
 
+[node1 ~]$ k exec -it tnginx -- /bin/sh -c "curl http://10.5.1.50"
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+------------
+
+[node1 ~]$ k apply -f npol.yaml
+networkpolicy.networking.k8s.io/default-deny-ingress created
+[node1 ~]$ k exec -it tnginx -- /bin/sh -c "curl http://10.5.1.50"
+curl: (7) Failed to connect to 10.5.1.50 port 80: Connection refused
+command terminated with exit code 7
 -------------
 
 kubectl get pods -o json | jq '.items | group_by(.metadata.creationTimestamp) | map({"timestamp": .[0].metadata.creationTimestamp, "count": length}) | sort_by(.count)'
