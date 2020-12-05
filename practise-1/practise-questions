@@ -490,6 +490,10 @@ https://coreos.com/kubernetes/docs/latest/openssl.html
 https://kubernetes.io/docs/admin/kubelet-tls-bootstrapping/
 https://github.com/cloudflare/cfssl
 
+-------------
+
+kubectl get pods -n=kube-system -o custom-columns=START_TIME:.status.startTime,POD_IP:.status.podIP --sort-by .status.startTime
+
 ------------
 apiVersion: batch/v1
 kind: Job
