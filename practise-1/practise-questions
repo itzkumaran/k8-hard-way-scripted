@@ -1,24 +1,35 @@
 *** important settings ***
 
-autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-syntax on
-
+source <(kubectl completion bash)
+complete -F __start_kubectl k
 alias k=kubectl 
-export an="--all-namespaces"
+alias kgp="kubectl get pods"
+alias kgn="kubectl get nodes"
+alias kga="kubectl get all"
+alias kgds="kubectl get daemonsets"
+alias kgr="kubectl get replicasets"
+alias kgd="kubectl get deployments"
+alias kge="kubectl get events --sort-by='.metadata.creationTimestamp'"
+alias kgs="kubectl get services"
+export ETCDCTL_API=3
 export dr="--dry-run=client -o yaml"
+export an="--all-namespaces"
 export ks="-n=kube-system"
-export nw="--wait=false"
-export ym="-o yaml"
 export nr="--restart=Never"
-export ns="-n=admin1401"
+export nw="--wait=false --force"
 
-export ns="-n=practise-2"
-export ks="-n=kube-system"
-export nr="--restart=Never"
-export dr="--dry-run=client -o yaml"
-export an="--all-namespaces"
-export ym="-o yaml"
-alias k="kubectl"
+------------
+
+set ts=2
+set sts=2
+set sw=2
+set expandtab
+syntax on
+filetype off
+filetype plugin indent on
+
+
+https://dl.k8s.io/v1.19.2/bin/linux/amd64/kubelet
 ------------
 
 source <(kubectl completion bash)
