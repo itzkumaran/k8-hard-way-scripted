@@ -380,6 +380,10 @@ Create a service that uses a scratch disk. ==> emptyDir : {}
 a. Change the service to mount a disk from the host.
 b. Change the service to mount a persistent volume.
 
+-----
+
+cronjob 
+watch "kubectl get pods -n cj2 -l cj2job --sort-by=.metadata.creationTimestamp -o 'jsonpath={.items[-1].metadata.name}' | xargs kubectl logs -n cj2"
 -----------
 
  CKA exam testing
