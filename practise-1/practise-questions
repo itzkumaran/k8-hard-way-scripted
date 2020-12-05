@@ -490,6 +490,24 @@ https://coreos.com/kubernetes/docs/latest/openssl.html
 https://kubernetes.io/docs/admin/kubelet-tls-bootstrapping/
 https://github.com/cloudflare/cfssl
 
+------------
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  template:
+  parallelism: 5
+  completions: 10
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["echo","hello"]
+      restartPolicy: Never
+
+----------
+
 Q: You have a Container with a volume mount. Add a init container that creates an empty file in the volume. (only trick is to mount the volume to init-container as well)
 
 https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
