@@ -216,6 +216,26 @@ spec:
   - name: secret-volume
     secret:
       secretName: dotfile-secret
+      
+      piVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: foodie
+  name: loadb
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: foodie
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+~
+
 -------------
 
 kubectl get pods -o json | jq '.items | group_by(.metadata.creationTimestamp) | map({"timestamp": .[0].metadata.creationTimestamp, "count": length}) | sort_by(.count)'
