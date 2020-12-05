@@ -193,28 +193,6 @@ kubectl get pods -o json | jq '.items | group_by(.metadata.creationTimestamp) | 
 -----------------
 
 
-To start with understand the concepts and practice all exam topics thoroughly as per the below example questions. The exam is intense though as it requires 3 hours of concentrated effort during which you need to solve 24 problems but as long as you enjoy solving problems, it feels very rewarding. it's not very difficult to clear the exam (as some articles on the internet claim it to be) provided you. So, if you are interested to take this exam and have a second thought about it, my sincere advice is, just do it! You will clear it!!
-Practice this Examples questions:
-dgkanatsios/CKAD-exercises
-A set of exercises that helped me prepare for the Certified Kubernetes Application Developer exam, offered by the Cloud…
-github.com
-Practice Enough With These 150 Questions for the CKAD Exam
-Exercises get you ready for the Certified Kubernetes Application Developer exam
-medium.com
-Certified Kubernetes Administrator (CKA) with Practice Tests
-Kubernetes is one of the highest trending technology in Cloud Computing as of today. Kubernetes had the fastest growth…
-www.udemy.com
-walidshaari/Kubernetes-Certified-Administrator
-Online resources that will help you prepare for taking the CNCF CKA "Kubernetes Certified Administrator" Certification…
-github.com
-My Exam Practice Question Dumps:
-CNCF Kubernetes Class + labs
-K8S The Hard Way run through
-Run through all the tasks in the k8s docs
-Practice with systemd, journald, openssl, cfssl, and etcd
-Work through the sections in above GitHub list
-Note — there are no answers here on purpose. You should be able to do these yourself using the minimal docs that you are allowed to use during the test. At a minimum, this should train you on where to look for this info during the test, without notes
-
 
 ---------------
 Practice Example Question Dump -1:
@@ -307,6 +285,10 @@ a. Pull secrets from environment variables
 b. Pull secrets from a volume
 c. Dump the secrets out via kubectl to show it worked
 
+Create a job that runs every 3 minutes and prints out the current time.
+
+Create a job that runs 20 times, 5 containers at a time, and prints “Hello parallel world”
+
 ############################################
 Additional Practice Example Question Dump -3:
 
@@ -314,10 +296,6 @@ Create a service that manually requires endpoint creation — and create that to
 
 a. Change the update strategy to do a rolling update but delaying 30 seconds between pod updates => terminationGracePeriodSeconds: 30
 
-
-Create a job that runs every 3 minutes and prints out the current time.
-
-Create a job that runs 20 times, 5 containers at a time, and prints “Hello parallel world”
 
 Create a service that uses an external load balancer and points to a 3 pod cluster running nginx.
 Create a horizontal autoscaling group that starts with 2 pods and scales when CPU usage is over 50%.
@@ -328,6 +306,60 @@ Create a networking policy such that only pods with the label access=granted can
 a. Create an nginx pod and attach this policy to it.
 b. Create a busybox pod and attempt to talk to nginx — should be blocked
 c. Attach the label to busybox and try again — should be allowed
+
+------------
+
+[node1 ~]$ k exec -it busybox -- /bin/sh -c "ping 10.5.1.58"
+PING 10.5.1.58 (10.5.1.58): 56 data bytes
+64 bytes from 10.5.1.58: seq=0 ttl=64 time=0.204 ms
+64 bytes from 10.5.1.58: seq=1 ttl=64 time=0.070 ms
+64 bytes from 10.5.1.58: seq=2 ttl=64 time=0.078 ms
+64 bytes from 10.5.1.58: seq=3 ttl=64 time=0.071 ms
+64 bytes from 10.5.1.58: seq=4 ttl=64 time=0.068 ms
+64 bytes from 10.5.1.58: seq=5 ttl=64 time=0.067 ms
+64 bytes from 10.5.1.58: seq=6 ttl=64 time=0.067 ms
+^C
+--- 10.5.1.58 ping statistics ---
+7 packets transmitted, 7 packets received, 0% packet loss
+round-trip min/avg/max = 0.067/0.089/0.204 ms
+[node1 ~]$ kgp --show-labels
+NAME                     READY   STATUS      RESTARTS   AGE     LABELS
+busybox                  1/1     Running     0          9m22s   access=granted,app=busybox
+dtjob-1607139360-bwvw7   0/1     Completed   0          8m51s   controller-uid=7fd9d5bf-9143-4eff-86a3-37a45bdc8d7b,job-name=dtjob-1607139360
+dtjob-1607139540-96ntt   0/1     Completed   0          5m51s   controller-uid=1dc8519e-7687-4fe5-9cad-ae4c516eb92b,job-name=dtjob-1607139540
+dtjob-1607139720-5f8ph   0/1     Completed   0          2m51s   controller-uid=db4d801a-ebe2-4de5-94b7-b4d3dc0b707b,job-name=dtjob-1607139720
+nginx                    1/1     Running     0          4m8s    app=nginx
+
+[node1 ~]$ k label po/busybox access-
+pod/busybox labeled
+[node1 ~]$ kgp --show-labels
+NAME                     READY   STATUS      RESTARTS   AGE     LABELS
+busybox                  1/1     Running     0          9m39s   app=busybox
+dtjob-1607139360-bwvw7   0/1     Completed   0          9m8s    controller-uid=7fd9d5bf-9143-4eff-86a3-37a45bdc8d7b,job-name=dtjob-1607139360
+dtjob-1607139540-96ntt   0/1     Completed   0          6m8s    controller-uid=1dc8519e-7687-4fe5-9cad-ae4c516eb92b,job-name=dtjob-1607139540
+dtjob-1607139720-5f8ph   0/1     Completed   0          3m8s    controller-uid=db4d801a-ebe2-4de5-94b7-b4d3dc0b707b,job-name=dtjob-1607139720
+dtjob-1607139900-lmw6s   0/1     Completed   0          7s      controller-uid=2a7e678c-a0d0-4421-9509-55b57b7b031e,job-name=dtjob-1607139900
+nginx                    1/1     Running     0          4m25s   app=nginx
+
+node1 ~]$ k exec -it busybox -- /bin/sh -c "ping 10.5.1.58"
+PING 10.5.1.58 (10.5.1.58): 56 data bytes
+
+[node1 ~]$ k describe networkpolicies
+Name:         access-nginx
+Namespace:    default
+Created on:   2020-12-05 03:32:24 +0000 UTC
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     app=nginx
+  Allowing ingress traffic:
+    To Port: <any> (traffic allowed to all ports)
+    From:
+      PodSelector: access=granted
+  Not affecting egress traffic
+  Policy Types: Ingress
+-----------------
+
 Create a service that references an externalname.
 a. Test that this works from another pod
 Create a pod that runs all processes as user 1000.
