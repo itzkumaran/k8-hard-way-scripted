@@ -358,6 +358,37 @@ Spec:
       PodSelector: access=granted
   Not affecting egress traffic
   Policy Types: Ingress
+  ---------------
+  
+  [node1 ~]$ k run nginx --image=nginx --labels=app=nginx
+pod/nginx created
+[node1 ~]$ kgs -o wide
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP   99m   <none>
+nginx        ClusterIP   10.99.101.168   <none>        80/TCP    13m   app=nginx
+[node1 ~]$ kgs -o wide
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP   99m   <none>
+nginx        ClusterIP   10.99.101.168   <none>        80/TCP    13m   app=nginx
+[node1 ~]$ kgs -o wide
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP   99m   <none>
+nginx        ClusterIP   10.99.101.168   <none>        80/TCP    13m   app=nginx
+[node1 ~]$ k exec -it busybox -- /bin/sh
+/ # wget --spider --timeout=1 nginx
+Connecting to nginx (10.99.101.168:80)
+remote file exists
+/ # exit
+[node1 ~]$ k run nginx --image=nginx --labels=app=nginx^C
+[node1 ~]$ k label po/busybox access-
+pod/busybox labeled
+[node1 ~]$ k exec -it busybox -- /bin/sh
+/ # wget --spider --timeout=1 nginx
+Connecting to nginx (10.99.101.168:80)
+wget: can't connect to remote host (10.99.101.168): Connection refused
+/ # wget --spider --timeout=1 nginx
+Connecting to nginx (10.99.101.168:80)
+wget: download timed out
 -----------------
 
 Create a service that references an externalname.
@@ -367,7 +398,9 @@ Create a namespace
 a. Run a pod in the new namespace
 b. Put memory limits on the namespace
 c. Limit pods to 2 persistent volumes in this namespace
+
 Write an ingress rule that redirects calls to /foo to one service and to /bar to another
+
 Write a service that exposes nginx on a nodeport
 a. Change it to use a cluster port
 b. Scale the service
@@ -375,6 +408,7 @@ c. Change it to use an external IP
 d. Change it to use a load balancer
 Deploy nginx with 3 replicas and then expose a port
 a. Use port forwarding to talk to a specific port
+
 Make an API call using CURL and proper certs
 Upgrade a cluster with kubeadm
 Get logs for a pod
