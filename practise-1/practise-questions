@@ -288,13 +288,22 @@ c. Dump the secrets out via kubectl to show it worked
 Create a job that runs every 3 minutes and prints out the current time.
 
 Create a job that runs 20 times, 5 containers at a time, and prints “Hello parallel world”
+Upgrade a cluster with kubeadm
+Get logs for a pod
+Deploy a pod with the wrong image name (like — image=nginy) and find the error message.
+Get logs for kubectl
+Get logs for the scheduler
+Restart kubelet
+Convert a CRT to a PEM
+a. Convert it back
+Backup an etcd cluster
+List the members of an etcd cluster
+Find the health of etcd
 
 ############################################
 Additional Practice Example Question Dump -3:
 
-Create a service that manually requires endpoint creation — and create that too => PENDING
 
-a. Change the update strategy to do a rolling update but delaying 30 seconds between pod updates => terminationGracePeriodSeconds: 30
 
 
 Create a service that uses an external load balancer and points to a 3 pod cluster running nginx.
@@ -410,17 +419,7 @@ Deploy nginx with 3 replicas and then expose a port
 a. Use port forwarding to talk to a specific port
 
 Make an API call using CURL and proper certs
-Upgrade a cluster with kubeadm
-Get logs for a pod
-Deploy a pod with the wrong image name (like — image=nginy) and find the error message.
-Get logs for kubectl
-Get logs for the scheduler
-Restart kubelet
-Convert a CRT to a PEM
-a. Convert it back
-Backup an etcd cluster
-List the members of an etcd cluster
-Find the health of etcd
+
 
 --------------
  ********** PENDING ***********
@@ -445,6 +444,10 @@ Question not clear ==>
 Create a service that uses a scratch disk. ==> emptyDir : {}
 a. Change the service to mount a disk from the host.
 b. Change the service to mount a persistent volume.
+
+Create a service that manually requires endpoint creation — and create that too => PENDING
+
+a. Change the update strategy to do a rolling update but delaying 30 seconds between pod updates => terminationGracePeriodSeconds: 30
 
 -----
 
