@@ -1,0 +1,220 @@
+BASHRC settings
+------------
+source <(kubectl completion bash)
+complete -F __start_kubectl k
+alias k=kubectl
+alias kgp="kubectl get pods"
+alias kga="kubectl get all"
+alias kgs="kubectl get services"
+alias kgd="kubectl get deployments"
+alias kgn="kubectl get nodes"
+alias kgr="kubectl get replicasets"
+alias kge="kubectl get events --sort-by='.metadata.creationTimestamp'"
+export an="--all-namespaces"
+export ks="-n=kube-system"
+export dr="--dry-run=client -o yaml"
+export nr="--restart=Never"
+export nw="--wait=false --force"
+export ETCDCTL_API=3
+
+
+VIMRC settings
+----------------
+set ts=2
+set sts=2
+set sw=2
+set expandtab
+syntax on
+filetype off
+filetype plugin indent on
+
+Run commands:
+-----------
+
+command: ["/bin/sh","-c"]
+args: ["command one; command two && command three"]
+
+Port open test:
+-------------
+nc -z -v -w 2 np-test-service 80
+
+DNS Test:
+--------
+k run dns-test --image=busybox:1.28 $nr -- /bin/sh -c "sleep 4800"
+
+Docker events:
+-----------------
+docker events --until 0m | grep web-server | grep die
+
+etcdclient
+-------
+curl -LO git.io/etcdclient.yaml
+
+openssl
+---------
+
+conver pem to crt
+------------
+openssl x509 -outform der -in your-cert.pem -out your-cert.crt
+
+
+conver crt to pem
+------------
+openssl x509 -outform pem -in your-cert.crt -out your-cert.pem
+
+----------
+
+RBAC
+------
+Create key file - 
+openssl genrsa -out test.key 2048
+
+Create csr file - 
+openssl req -new -key test.key -out test.csr
+
+Convert it into base64 and remove \n
+cat test.csr | base64 | tr -d "\n"
+
+Generate an yaml like this with the above generated base64 data (this name could be anything) user name is taken from CN that is given while generating CSR file (IMPORTANT)  => 
+cat <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: test-csr
+spec:
+  groups:
+  - system:authenticated
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZqQ0NBVDRDQVFBd0VURVBNQTBHQTFVRUF3d0dZVzVuWld4aE1JSUJJakFOQmdrcWhraUc5dzBCQVFFRgpBQU9DQVE4QU1JSUJDZ0tDQVFFQTByczhJTHRHdTYxakx2dHhWTTJSVlRWMDNHWlJTWWw0dWluVWo4RElaWjBOCnR2MUZtRVFSd3VoaUZsOFEzcWl0Qm0wMUFSMkNJVXBGd2ZzSjZ4MXF3ckJzVkhZbGlBNVhwRVpZM3ExcGswSDQKM3Z3aGJlK1o2MVNrVHF5SVBYUUwrTWM5T1Nsbm0xb0R2N0NtSkZNMUlMRVI3QTVGZnZKOEdFRjJ6dHBoaUlFMwpub1dtdHNZb3JuT2wzc2lHQ2ZGZzR4Zmd4eW8ybmlneFNVekl1bXNnVm9PM2ttT0x1RVF6cXpkakJ3TFJXbWlECklmMXBMWnoyalVnald4UkhCM1gyWnVVV1d1T09PZnpXM01LaE8ybHEvZi9DdS8wYk83c0x0MCt3U2ZMSU91TFcKcW90blZtRmxMMytqTy82WDNDKzBERHk5aUtwbXJjVDBnWGZLemE1dHJRSURBUUFCb0FBd0RRWUpLb1pJaHZjTgpBUUVMQlFBRGdnRUJBR05WdmVIOGR4ZzNvK21VeVRkbmFjVmQ1N24zSkExdnZEU1JWREkyQTZ1eXN3ZFp1L1BVCkkwZXpZWFV0RVNnSk1IRmQycVVNMjNuNVJsSXJ3R0xuUXFISUh5VStWWHhsdnZsRnpNOVpEWllSTmU3QlJvYXgKQVlEdUI5STZXT3FYbkFvczFqRmxNUG5NbFpqdU5kSGxpT1BjTU1oNndLaTZzZFhpVStHYTJ2RUVLY01jSVUyRgpvU2djUWdMYTk0aEpacGk3ZnNMdm1OQUxoT045UHdNMGM1dVJVejV4T0dGMUtCbWRSeEgvbUNOS2JKYjFRQm1HCkkwYitEUEdaTktXTU0xMzhIQXdoV0tkNjVoVHdYOWl4V3ZHMkh4TG1WQzg0L1BHT0tWQW9FNkpsYWFHdTlQVmkKdjlOSjVaZlZrcXdCd0hKbzZXdk9xVlA3SVFjZmg3d0drWm89Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+EOF
+
+Approve the cert request:
+kubectl certificate approve test-csr
+
+Get the cert data after base64 decoding:
+kubectl get csr/test-csr -o jsonpath='{.status.certificate}' | base64 -d > test.crt
+
+Set credentials in config files:
+kubectl config set-credentials test --client-key=./test.key --client-certificate=./test.crt --embed-certs=true
+kubectl config set-context test@kubernetes --cluster=kubernetes --user=test
+kubectl config use-context test@kubernetes & then run verify 
+
+Verifying:
+If you set context to the new user then run the normal kubectl command =>
+
+kubectl get pods or nodes to verify the permissions.
+
+If you are still as admin user (without context changed) then run the normal kubectl command =>
+
+kubectl auth can-i get pods --as test
+kubectl get pods nginx --as test
+[at this step you will get permission denied coz you have not created role/binding]
+
+Create role and bind it to the above user (namespace scoped)
+kubectl create role test-role --verb=get --verb=update --resources=pods
+kubectl  create rolebinding test-role-binding --role=test-role --user=test
+
+NOTE: Only for clusterscope resource requirements like pv, pvc => create Cluster roles
+
+
+ETCDCTL_API
+------------
+
+k $ks exec -it etcd-node1 -- /bin/sh -c "ETCDCTL_API=3 etcdctl snapshot save /var/lib/etcd/backupdb --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key"
+
+k $ks exec -it etcd-node1 -- /bin/sh -c "ETCDCTL_API=3 etcdctl snapshot status /var/lib/etcd/backupdb --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key"
+
+k $ks exec -it etcd-node1 -- /bin/sh -c "ETCDCTL_API=3 etcdctl snapshot restore /var/lib/etcd/backupdb --data-dir=/var/lib/etcd/archive --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key"
+
+mv /etc/kubernetes/manifests/*.yaml /tmp/
+rm -rf /var/lib/etcd/member
+mv /var/lib/etcd/archive/member /var/lib/etcd/member
+rm -rf /var/lib/etcd/archive/
+mv /tmp/*.yaml /etc/kubernetes/manifests/
+
+ETCDCTL_API=3 etcdctl snapshot save /opt/snapshot-pre-boot.db \ 
+--endpoints=https://127.0.0.1:2379 \ 
+--cacert=/etc/kubernetes/pki/etcd/ca.crt \ 
+--cert=/etc/kubernetes/pki/etcd/server.crt \ 
+--key=/etc/kubernetes/pki/etcd/server.key \ 
+
+
+ETCDCTL_API=3 etcdctl snapshot restore /opt/snapshot-pre-boot.db \ 
+--endpoints=https://127.0.0.1:2379 \ 
+--cacert=/etc/kubernetes/pki/etcd/ca.crt \ 
+--cert=/etc/kubernetes/pki/etcd/server.crt \ 
+--key=/etc/kubernetes/pki/etcd/server.key \ 
+--name=master \ 
+--data-dir=/var/lib/etcd-from-backup \ 
+--initial-cluster=master=https://127.0.0.1:2380 \ 
+--initial-cluster-token=etcd-cluster-1 \ 
+--initial-advertise-peer-urls=https://127.0.0.1:2380
+
+Update etcd service file
+---------------------
+
+data-dir => replace with new data dir as given in restore command.
+name ==> can keep existing name and match off the restore name
+initial-cluster-token => as in above restore cmd
+
+
+Custom scheduler 
+----------------
+
+--scheduler-name=added
+--secure-port=0
+--port=10263 (changed)
+-- healthcheck (ports changed to 10263)
+-- healthcheck (protocol changed to http)
+
+-------------------
+
+*** to try it out *** 
+
+jsonpath
+---------
+get taints set on node01
+get tolerations set on pode
+no of nodes ready and dont have taints
+get type of service 
+get ip of pods in jsonpath
+ready count in deployments
+# of restarts in pod
+# of restarts of specific container in multi-container pod
+What is the value set to the label beta.kubernetes.io/arch on node01?
+how many labels set using jsonpath
+
+Master Upgrade
+***************
+apt-get update -y
+apt-get upgrade -y kubeadm=1.19.0-00
+kubectl upgrade plan
+kubectl upgrade apply v1.19.0
+$ apt-get upgrade -y kubelet=v1.19.0
+$ systemctl daemon-reload
+$ systemctl restart kubelet
+
+Node Upgrade
+**************
+$ apt-get update
+$ kubectl drain node01
+$ apt-get upgrade -y kubeadm=1.12.0-00
+$ apt-get upgrade -y kubelet=1.12.0-00
+$ kubeadm upgrade node config --kubelet-version v1.12.0
+$ systemctl daemon-reload
+$ systemctl restart kubelet
+$ kubectl uncordon node01
+
+etcdctl fixes issue
+CNI - mumshad
+Networking - mumshad
+dns - mumshad
+openssl - convert to formats - dates validity for certs
+static pod path - kubelet
+pod manifest path - kubelet
+json paths 
+
+-------------
+
