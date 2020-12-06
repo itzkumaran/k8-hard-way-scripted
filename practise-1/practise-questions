@@ -4,6 +4,8 @@ Create multiple admins => https://stackoverflow.com/questions/50381227/how-to-cr
 Create serviceAccount, token and configure context => https://stackoverflow.com/questions/44948483/create-user-in-kubernetes-for-kubectl
 Use certs, keys configure context => https://stackoverflow.com/questions/44948483/create-user-in-kubernetes-for-kubectl
 
+https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/
+
 *** important settings ***
 
 source <(kubectl completion bash)
