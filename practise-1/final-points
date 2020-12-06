@@ -5,6 +5,7 @@ complete -F __start_kubectl k
 alias k=kubectl
 alias kgp="kubectl get pods"
 alias kga="kubectl get all"
+alias kgds="kubectl get daemonsets"
 alias kgs="kubectl get services"
 alias kgd="kubectl get deployments"
 alias kgn="kubectl get nodes"
