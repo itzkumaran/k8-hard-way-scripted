@@ -195,7 +195,43 @@ spec:
 
 kubectl set image deployment/nginx nginx=nginx:1.17
 
+-----------
+Podaffinity
+-------
 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: logger
+  labels:
+    name: logger
+spec:
+  containers:
+  - name: logger
+    image: busybox
+    command: ["sleep","10000"]
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-pod-affinity
+spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: name
+            operator: In
+            values:
+            - logger
+        topologyKey: topology.kubernetes.io/zone
+  containers:
+  - name: with-pod-affinity
+    image: busybox
+    command: ["sleep","10000"]
+
+------------
 apiVersion: v1
 kind: Pod
 metadata:
