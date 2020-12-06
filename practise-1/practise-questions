@@ -1,7 +1,8 @@
 **** RBAC ***
 -------------
 Create multiple admins => https://stackoverflow.com/questions/50381227/how-to-create-multiple-admin-users-for-kubernetes-cluster
-Create user and configure context => https://stackoverflow.com/questions/44948483/create-user-in-kubernetes-for-kubectl
+Create serviceAccount, token and configure context => https://stackoverflow.com/questions/44948483/create-user-in-kubernetes-for-kubectl
+Use certs, keys configure context => https://stackoverflow.com/questions/44948483/create-user-in-kubernetes-for-kubectl
 
 *** important settings ***
 
