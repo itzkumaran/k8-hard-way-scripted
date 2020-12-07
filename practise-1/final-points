@@ -171,6 +171,18 @@ Custom scheduler
 -- healthcheck (protocol changed to http)
 
 -------------------
+Bookmarks:
+
+pod affinity: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#an-example-of-a-pod-that-uses-pod-affinity
+pod anti affinity: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#always-co-located-in-the-same-node
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-http-request
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-tcp-liveness-probe
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-readiness-probes
+
+
+-----------
 
 *** to try it out *** 
 
