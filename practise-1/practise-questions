@@ -71,6 +71,59 @@ kubectl get pods --all-namespaces -o jsonpath='{range .items[*].status.initConta
 
 # List Events sorted by timestamp
 kubectl get events --sort-by=.metadata.creationTimestamp
+
+node1 ~]$ kgp -o jsonpath="{.items[?(@.status.qosClass=='BestEffort')].spec}"
+{"containers":[{"image":"busybox:1.28","imagePullPolicy":"IfNotPresent","name":"busybox","resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","volumeMounts":[{"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount","name":"default-token-gvhjz","readOnly":true}]}],"dnsPolicy":"ClusterFirst","enableServiceLinks":true,"nodeName":"node2","preemptionPolicy":"PreemptLowerPriority","priority":0,"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"serviceAccount":"default","serviceAccountName":"default","terminationGracePeriodSeconds":30,"tolerations":[{"effect":"NoExecute","key":"node.kubernetes.io/not-ready","operator":"Exists","tolerationSeconds":300},{"effect":"NoExecute","key":"node.kubernetes.io/unreachable","operator":"Exists","tolerationSeconds":300}],"volumes":[{"name":"default-token-gvhjz","secret":{"defaultMode":420,"secretName":"default-token-gvhjz"}}]}
+
+
+[node1 ~]$ kgp -o jsonpath="{.items[?(@.status.qosClass=='BestEffort')].spec.containers[*].resources}"
+{}
+
+=> pods that does not have resource limits set 
+[node1 ~]$ kgp -o jsonpath="{.items[?(@.status.qosClass=='BestEffort')].spec.containers[*].name}"
+busybox
+
+=> pods that has resource limits set 
+[node1 ~]$ kgp -o jsonpath="{.items[?(@.status.qosClass=='Burstable')].spec.containers[*].name}"
+nginx
+
+[node1 ~]$ kgp -o jsonpath="{.items[?(@.status.qosClass=='Burstable')].spec.containers[*].resources}"
+
+=> podCIDR
+[node1 ~]$ kgn -o jsonpath="{.items[*].spec.podCIDR}"
+10.5.0.0/24 10.5.1.0/24
+
+=> taints
+[node1 ~]$ kgn -o jsonpath="{.items[*].spec.taints}"
+[{"effect":"NoSchedule","key":"node-role.kubernetes.io/master"}]
+
+=> labels
+[node1 ~]$ kgn -o jsonpath="{.items[*].spec.podCIDR}"
+10.5.0.0/24 10.5.1.0/24[node1 ~]$ kgn -o jsonpath="{.items[*].spec.taints}"
+[{"effect":"NoSchedule","key":"node-role.kubernetes.io/master"}]
+
+=> pod ips
+
+[node1 ~]$ kgp -o jsonpath="{.items[*].status.podIP}"
+10.5.1.7 10.5.1.6
+[node1 ~]$ kgp -o jsonpath="{.items[*].status.podIPs}"
+[{"ip":"10.5.1.7"}] [{"ip":"10.5.1.6"}]
+
+=> os image
+[node1 ~]$ kgn -o jsonpath="{.items[*].status.nodeInfo.osImage}"
+CentOS Linux 7 (Core) CentOS Linux 7 (Core)
+
+=> version 
+[node1 ~]$ kgn -o jsonpath="{.items[*].status.nodeInfo.kubeletVersion}"
+v1.19.1 v1.19.1
+
+=> containerId
+[node1 ~]$ kgp -o jsonpath="{.items[?(@.status.qosClass=='Burstable')].status.containerStatuses[*].containerID}"
+docker://353ab0f27d2441eb0edd075ecd1ab56c8dc69a28716205aa4fc144fc68c9a3aa
+
+=> get message for failure reason (i.e. crashloopbackoff)
+[node1 ~]$ kgp -o jsonpath="{.items[?(@.status.containerStatuses[*].state.waiting.reason=='CrashLoopBackOff')].status.containerStatuses[*].state.waiting.message}"
+back-off 5m0s restarting failed container=busybox pod=busybox_default
 ------------
 
 source <(kubectl completion bash)
