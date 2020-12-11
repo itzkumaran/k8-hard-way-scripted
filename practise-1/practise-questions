@@ -26,6 +26,15 @@ export ks="-n=kube-system"
 export nr="--restart=Never"
 export nw="--wait=false --force"
 
+Bro, could you pls help with below qns?
+
+1. I remember you were talking about the etcd backup to be taken on the student node itself. Can you confirm if the required certs were already there or we need to pull from?
+2. Were there any specific qns to install ingress controller or configure ingress?
+3. Any bootstrap new worker/cluster or kind of questions?
+4. Any specific qn to install CNI or network plugin?
+5. how was the exam terminal UI. any challenges in accessing kubernetes.io docs?
+5. Any other specific tips from your end on the exam?
+
 ------------
 
 set ts=2
